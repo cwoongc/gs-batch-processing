@@ -60,7 +60,7 @@ public class BatchConfiguration {
     public JdbcBatchItemWriter<Person> writer(DataSource dataSource) {
         return new JdbcBatchItemWriterBuilder<Person>()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
-                .sql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName")
+                .sql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName)")
                 .dataSource(dataSource)
                 .build();
     }
@@ -72,9 +72,10 @@ public class BatchConfiguration {
      * <p>
      * Job 만드는 법. JobBuilder를 통해 이루어진다.
      * </p>
-     * flow({@link Step} step)메소드를 이용해 Job을 구성하는 step pipeline을 만들 수 있으며,
+     * jobBuilder.flow({@link Step} step)메소드를 이용해 Job을 구성하는 step pipeline을 만들 수 있으며,
      * spring-batch의 {@link JobExecutionListener}를 구현한 리스너를 통해
-     * Job의 실행 상태와 관련된 callback(옵저버)도 빌드과정에서 설정할 수 있다.
+     * Job의 실행 상태와 관련된 callback(옵저버)도 job 빌드과정에서 설정할 수 있다.
+     * Job execution 상태를 DB에 유지관리하기 위해 incrementer를 쓸 수도 있다.
      *
      * @param listener
      * @param step1
@@ -83,9 +84,9 @@ public class BatchConfiguration {
     @Bean
     public Job importUserJob(JobCompletionNotificationListener listener, Step step1) {
         return jobBuilderFactory.get("importUserJob")
-                .incrementer(new RunIdIncrementer()) //DB에 execution state를 관리하기 위해 필요
+                .incrementer(new RunIdIncrementer()) //DB에 job execution state를 유지,관리하기 위해 필요
                 .listener(listener)
-                .flow(step1)
+                .flow(step1) // 각 step들을 jobBuilder.flow(Step step)으로 job에 등록,배열한다.
                 .end()
                 .build();
     }
