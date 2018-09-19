@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/jpa
+    password: root
+    username: root
+  batch:
+    initialize-schema: always
+
+
+

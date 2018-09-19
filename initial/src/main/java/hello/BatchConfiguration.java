@@ -13,6 +13,7 @@ import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilde
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +45,7 @@ public class BatchConfiguration {
                 .name("personItemReader")
                 .resource(new ClassPathResource("sample-data.csv"))
                 .delimited()
+                .delimiter(DelimitedLineTokenizer.DELIMITER_COMMA)
                 .names(new String[]{"firstName", "lastName"})
                 .fieldSetMapper(new BeanWrapperFieldSetMapper<Person>(){{
                     setTargetType(Person.class);
